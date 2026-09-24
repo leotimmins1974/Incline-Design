@@ -1,6 +1,8 @@
 //! Noto Sans setup and bold text helpers.
 
-use crate::fonts::{NOTO_SANS, NOTO_SANS_ARABIC, NOTO_SANS_DEVANAGARI, NOTO_SANS_KR, NOTO_SANS_MONO, NOTO_SANS_SC, NOTO_SANS_SYMBOLS, NOTO_SANS_SYMBOLS_2};
+use crate::fonts::{NOTO_SANS, NOTO_SANS_MONO, NOTO_SANS_SYMBOLS, NOTO_SANS_SYMBOLS_2};
+#[cfg(not(target_arch = "wasm32"))]
+use crate::fonts::{NOTO_SANS_ARABIC, NOTO_SANS_DEVANAGARI, NOTO_SANS_KR, NOTO_SANS_SC};
 
 const REGULAR_WEIGHT: f32 = 400.0;
 const BOLD_WEIGHT: f32 = 700.0;
@@ -16,22 +18,31 @@ fn variable_font(font: &'static [u8], weight: f32) -> egui::FontData {
 ///
 /// The base and mono faces cover Latin and Cyrillic. Script-specific faces are
 /// fallbacks for Simplified Chinese, Korean, Arabic/Persian, Devanagari, and
-/// UI symbols. The text faces are variable, so regular and bold share files.
+/// UI symbols; the web build leaves those four out (see [`crate::fonts`]). The
+/// text faces are variable, so regular and bold share files.
 pub(crate) fn setup_custom_fonts(ctx: &egui::Context) {
     let mut fonts = egui::FontDefinitions::empty();
     for (name, data) in [
         ("noto_sans_regular", variable_font(NOTO_SANS, REGULAR_WEIGHT)),
         ("noto_sans_mono_regular", variable_font(NOTO_SANS_MONO, REGULAR_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_arabic_regular", variable_font(NOTO_SANS_ARABIC, REGULAR_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_devanagari_regular", variable_font(NOTO_SANS_DEVANAGARI, REGULAR_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_sc_regular", variable_font(NOTO_SANS_SC, REGULAR_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_kr_regular", variable_font(NOTO_SANS_KR, REGULAR_WEIGHT)),
         ("noto_sans_symbols_regular", variable_font(NOTO_SANS_SYMBOLS, REGULAR_WEIGHT)),
         ("noto_sans_symbols_2", egui::FontData::from_static(NOTO_SANS_SYMBOLS_2)),
         ("noto_sans_bold", variable_font(NOTO_SANS, BOLD_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_arabic_bold", variable_font(NOTO_SANS_ARABIC, BOLD_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_devanagari_bold", variable_font(NOTO_SANS_DEVANAGARI, BOLD_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_sc_bold", variable_font(NOTO_SANS_SC, BOLD_WEIGHT)),
+        #[cfg(not(target_arch = "wasm32"))]
         ("noto_sans_kr_bold", variable_font(NOTO_SANS_KR, BOLD_WEIGHT)),
         ("noto_sans_symbols_bold", variable_font(NOTO_SANS_SYMBOLS, BOLD_WEIGHT)),
     ] {
@@ -40,9 +51,13 @@ pub(crate) fn setup_custom_fonts(ctx: &egui::Context) {
 
     let script_fallbacks = [
         "noto_sans_regular",
+        #[cfg(not(target_arch = "wasm32"))]
         "noto_sans_arabic_regular",
+        #[cfg(not(target_arch = "wasm32"))]
         "noto_sans_devanagari_regular",
+        #[cfg(not(target_arch = "wasm32"))]
         "noto_sans_sc_regular",
+        #[cfg(not(target_arch = "wasm32"))]
         "noto_sans_kr_regular",
         "noto_sans_symbols_regular",
         "noto_sans_symbols_2",
@@ -54,9 +69,13 @@ pub(crate) fn setup_custom_fonts(ctx: &egui::Context) {
         egui::FontFamily::Monospace,
         [
             "noto_sans_mono_regular",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_arabic_regular",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_devanagari_regular",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_sc_regular",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_kr_regular",
             "noto_sans_symbols_regular",
             "noto_sans_symbols_2",
@@ -69,9 +88,13 @@ pub(crate) fn setup_custom_fonts(ctx: &egui::Context) {
         egui::FontFamily::Name("noto_sans_bold".into()),
         [
             "noto_sans_bold",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_arabic_bold",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_devanagari_bold",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_sc_bold",
+            #[cfg(not(target_arch = "wasm32"))]
             "noto_sans_kr_bold",
             "noto_sans_symbols_bold",
             "noto_sans_symbols_2",

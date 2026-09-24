@@ -653,8 +653,8 @@ impl<'a> App<'a> {
         self.refresh_axis_names();
         // The status bar's picker switches this live afterwards; here it just
         // installs what the last session (or the OS locale) left in the config.
-        self.editor.language = config.language;
-        crate::i18n::select_language(config.language);
+        self.editor.language = config.language.or_available();
+        crate::i18n::select_language(self.editor.language);
         self.editor.dark_mode = config.dark_mode;
         self.editor.show_console = config.show_console;
         self.editor.panel_chrome = config.panel_chrome;

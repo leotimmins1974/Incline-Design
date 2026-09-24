@@ -123,7 +123,8 @@ impl Default for LanguageChoice {
 }
 
 impl LanguageChoice {
-    /// Every value, in the order the status bar's picker lists them.
+    /// Every value, in the order the status bar's picker lists them (skipping
+    /// any this build lacks - see [`Self::is_available`]).
     pub(crate) const ALL: [Self; 20] = [
         Self::English,
         Self::Spanish,
@@ -146,6 +147,19 @@ impl LanguageChoice {
         Self::Korean,
         Self::Ukrainian,
     ];
+
+    /// Whether this build bundles fonts for the language's script. The web
+    /// build leaves the Arabic, Devanagari and CJK faces out (see
+    /// [`crate::fonts`]), so it offers only languages Noto Sans itself covers.
+    pub(crate) fn is_available(self) -> bool {
+        !cfg!(target_arch = "wasm32") || !matches!(self, Self::ChineseSimplified | Self::Arabic | Self::Farsi | Self::Hindi | Self::Japanese | Self::Korean)
+    }
+
+    /// This choice, or English where the build cannot render it - a config
+    /// written by the desktop app can name a language the web build lacks.
+    pub(crate) fn or_available(self) -> Self {
+        if self.is_available() { self } else { Self::English }
+    }
 
     /// How this language names itself, in its own script. Never translated:
     /// someone who cannot read the running language has to be able to find
@@ -205,7 +219,11 @@ impl LanguageChoice {
     /// `ru-RU` and `ru` both pick Russian.
     fn from_system_locale() -> Self {
         for requested in system_languages() {
-            if let Some(choice) = Self::ALL.into_iter().find(|choice| choice.lang_id().language == requested.language) {
+            if let Some(choice) = Self::ALL
+                .into_iter()
+                .filter(|choice| choice.is_available())
+                .find(|choice| choice.lang_id().language == requested.language)
+            {
                 return choice;
             }
         }

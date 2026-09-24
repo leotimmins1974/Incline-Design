@@ -87,7 +87,7 @@ fn draw_language_picker(ui: &mut egui::Ui, editor: &EditorState, commands: &mut 
     }
     let title = tr!("status-language");
     dropdown_menu(&response, title, LANGUAGE_MENU_WIDTH, |ui| {
-        for choice in LanguageChoice::ALL {
+        for choice in LanguageChoice::ALL.into_iter().filter(|choice| choice.is_available()) {
             // Ticked rather than selected: the menu is a set of switches with
             // one on, the same shape the View menu's toggles have.
             if ContextMenuAction::new(choice.endonym()).checked(choice == editor.language).show(ui).clicked() {
